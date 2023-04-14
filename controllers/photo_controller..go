@@ -26,7 +26,7 @@ import (
 func CreatePhoto(c *gin.Context) {
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
-	var User models.FormatterUser
+	var User models.User
 	contentType := helpers.GetContentType(c)
 
 	Photo := models.Photo{}
@@ -79,7 +79,7 @@ func UpdatedPhoto(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	Photo := models.Photo{}
-	User := models.FormatterUser{}
+	User := models.User{}
 
 	photoId, _ := strconv.Atoi(c.Param("photoId"))
 	userID := uint(userData["id"].(float64))
@@ -133,7 +133,7 @@ func UpdatedPhoto(c *gin.Context) {
 // @Router /users/photo/view [get]
 func ViewPhoto(c *gin.Context) {
 	db := database.GetDB()
-	User := models.FormatterUser{}
+	User := models.User{}
 	Photo := []models.Photo{}
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	photoId, _ := strconv.Atoi(c.Query("photoId"))
@@ -185,7 +185,7 @@ func ViewPhoto(c *gin.Context) {
 func DeletedPhoto(c *gin.Context) {
 	db := database.GetDB()
 	Photo := models.Photo{}
-	User := models.FormatterUser{}
+	User := models.User{}
 
 	photoId, _ := strconv.Atoi(c.Param("photoId"))
 	Photo.ID = uint(photoId)
