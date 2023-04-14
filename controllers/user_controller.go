@@ -20,6 +20,9 @@ var (
 // @Accept json
 // @Produce json
 // @Param models.User body models.User true "Register User"
+// @Param username path string true "username User"
+// @Param email path string true "email User"
+// @Param password path string true "password User"
 // @Success 200 {object} models.User
 // @Router /user/register [post]
 func UserRegister(c *gin.Context) {
@@ -52,6 +55,8 @@ func UserRegister(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param models.User body models.User true "Login User"
+// @Param email path string true "email User"
+// @Param password path string true "password User"
 // @Success 200 {object} models.User
 // @Router /user/login [post]
 func UserLogin(c *gin.Context) {
