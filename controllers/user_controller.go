@@ -19,7 +19,6 @@ var (
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param models.User body models.User true "Register User"
 // @Param username path string true "username User"
 // @Param email path string true "email User"
 // @Param password path string true "password User"
@@ -54,7 +53,6 @@ func UserRegister(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param models.User body models.User true "Login User"
 // @Param email path string true "email User"
 // @Param password path string true "password User"
 // @Success 200 {object} models.User
