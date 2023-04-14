@@ -20,7 +20,7 @@ var (
 // @Accept json
 // @Produce json
 // @Param data body todo true"username User"
-// @Success 200 {object} models.User
+// @Success 200 {object} todo
 // @Router /user/register [post]
 func UserRegister(c *gin.Context) {
 	db := database.GetDB()
@@ -52,7 +52,7 @@ func UserRegister(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param data body todo true "todo User"
-// @Success 200 {object} models.User
+// @Success 200 {object} todo
 // @Router /user/login [post]
 func UserLogin(c *gin.Context) {
 	db := database.GetDB()
