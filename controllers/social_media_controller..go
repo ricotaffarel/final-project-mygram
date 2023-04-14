@@ -25,7 +25,8 @@ import (
 func CreateSocialMedia(c *gin.Context) {
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
-	var User models.FormatterUser
+	var User models.User
+	var FormatUser models.FormatterUser
 	contentType := helpers.GetContentType(c)
 
 	SocialMedia := models.SocialMedia{}
@@ -45,9 +46,14 @@ func CreateSocialMedia(c *gin.Context) {
 	}
 
 	if User.Role == "user" {
+		FormatUser.ID = User.ID
+		FormatUser.Age = User.Age
+		FormatUser.Email = User.Email
+		FormatUser.Username = User.Username
+		FormatUser.Role = User.Role
 		SocialMedia.UserID = userID
 		err = db.Create(&SocialMedia).Error
-		SocialMedia.User = &User
+		SocialMedia.User = &FormatUser
 	} else {
 		err = db.Create(&SocialMedia).Error
 	}
@@ -79,7 +85,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	SocialMedia := models.SocialMedia{}
-	User := models.FormatterUser{}
+	User := models.User{}
 
 	socialMediaId, _ := strconv.Atoi(c.Param("socialMediaId"))
 	userID := uint(userData["id"].(float64))
