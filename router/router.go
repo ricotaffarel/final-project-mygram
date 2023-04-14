@@ -39,10 +39,10 @@ func StartApp() *gin.Engine {
 		user.POST("/login", controllers.UserLogin)
 	}
 
-	userRouter := r.Group("users")
+	userRouter := r.Group("/users")
 	{
 		userRouter.Use(middlewares.Authentication())
-		userPhoto := r.Group("photo")
+		userPhoto := r.Group("/photo")
 		{
 			userPhoto.Use(middlewares.UserAuthorization())
 			// POST
@@ -54,7 +54,7 @@ func StartApp() *gin.Engine {
 			// DELETE
 			userPhoto.DELETE("/delete/:photoId", controllers.DeletedPhoto)
 		}
-		userSocialMedia := r.Group("socialmedia")
+		userSocialMedia := r.Group("/socialmedia")
 		{
 			userSocialMedia.Use(middlewares.UserAuthorization())
 			// POST
@@ -66,7 +66,7 @@ func StartApp() *gin.Engine {
 			// DELETE
 			userSocialMedia.DELETE("/delete/:socialMediaId", controllers.DeletedSocialMedia)
 		}
-		userComment := r.Group("comment")
+		userComment := r.Group("/comment")
 		{
 			userComment.Use(middlewares.UserAuthorization())
 			// POST
