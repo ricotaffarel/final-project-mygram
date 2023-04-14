@@ -44,8 +44,14 @@ func CreateSocialMedia(c *gin.Context) {
 		c.ShouldBind(&SocialMedia)
 	}
 
-	err = db.Create(&SocialMedia).Error
-	SocialMedia.User = &User
+	if User.Role == "user" {
+		SocialMedia.UserID = userID
+		err = db.Create(&SocialMedia).Error
+		SocialMedia.User = &User
+	} else {
+		err = db.Create(&SocialMedia).Error
+	}
+
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Unauthorized", nil)
 		c.JSON(http.StatusBadRequest, response)
@@ -73,12 +79,20 @@ func UpdatedSocialMedia(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	SocialMedia := models.SocialMedia{}
+	User := models.User{}
 
 	socialMediaId, _ := strconv.Atoi(c.Param("socialMediaId"))
 	userID := uint(userData["id"].(float64))
 	// Product.UserID = userID
 	SocialMedia.ID = uint(socialMediaId)
 	socialMedia := db.Preload("User").First(&SocialMedia)
+	err := db.Where("id = ?", userID).Take(&User).Error
+
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if contentType == appJSON {
 		c.ShouldBindJSON(&SocialMedia)
@@ -86,13 +100,15 @@ func UpdatedSocialMedia(c *gin.Context) {
 		c.ShouldBind(&SocialMedia)
 	}
 
-	if userID != SocialMedia.UserID {
+	if userID == SocialMedia.UserID {
+		err = socialMedia.Save(&SocialMedia).Error
+	} else if User.Role == "admin" {
+		err = socialMedia.Save(&SocialMedia).Error
+	} else {
 		response := helpers.APIResponse("Invalid social media id", http.StatusBadRequest, "Error Bad Request", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
-	err := socialMedia.Save(&SocialMedia).Error
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)
@@ -134,8 +150,10 @@ func ViewSocialMedia(c *gin.Context) {
 	fmt.Println(User.ID)
 	if socialMediaId != 0 {
 		err = db.Where("id = ?", socialMediaId).Find(&SocialMedia).Preload("User").Error
-	} else {
+	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&SocialMedia).Preload("User").Error
+	} else {
+		err = db.Find(&SocialMedia).Preload("User").Error
 	}
 
 	if err != nil {
@@ -167,20 +185,30 @@ func ViewSocialMedia(c *gin.Context) {
 func DeletedSocialMedia(c *gin.Context) {
 	db := database.GetDB()
 	SocialMedia := models.SocialMedia{}
+	User := models.User{}
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	socialMediaId, _ := strconv.Atoi(c.Param("socialMediaId"))
 	SocialMedia.ID = uint(socialMediaId)
 	userID := uint(userData["id"].(float64))
+	err := db.Where("id = ?", userID).Take(&User).Error
 
-	data := db.First(&SocialMedia)
-
-	if userID != SocialMedia.UserID {
-		response := helpers.APIResponse("Invalid social media id", http.StatusBadRequest, "Error Bad Request", nil)
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	err := data.Delete(&SocialMedia).Error
+	data := db.First(&SocialMedia)
+
+	if userID == SocialMedia.UserID {
+		err = data.Delete(&SocialMedia).Error
+	} else if User.Role == "admin" {
+		err = data.Delete(&SocialMedia).Error
+	} else {
+		response := helpers.APIResponse("Your don't have access to delete this social media", http.StatusBadRequest, "Error Bad Request", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)

@@ -33,46 +33,35 @@ func StartApp() *gin.Engine {
 
 	user := r.Group("/user")
 	{
-		// POST
 		user.POST("/register", controllers.UserRegister)
-		// POST
 		user.POST("/login", controllers.UserLogin)
 	}
 
 	userRouter := r.Group("/users")
 	{
 		userRouter.Use(middlewares.Authentication())
+		//Photo
 		userPhoto := userRouter.Group("/photo")
 		userPhoto.Use(middlewares.UserAuthorization())
-		// POST
 		userPhoto.POST("/create", controllers.CreatePhoto)
-		// UPDATE
 		userPhoto.PUT("/update/:photoId", controllers.UpdatedPhoto)
-		// READ
 		userPhoto.GET("/view", controllers.ViewPhoto)
-		// DELETE
 		userPhoto.DELETE("/delete/:photoId", controllers.DeletedPhoto)
 
+		//Social Media
 		userSocialMedia := userRouter.Group("/socialmedia")
 		userSocialMedia.Use(middlewares.UserAuthorization())
-		// POST
 		userSocialMedia.POST("/create", controllers.CreateSocialMedia)
-		// UPDATE
 		userSocialMedia.PUT("/update/:socialMediaId", controllers.UpdatedSocialMedia)
-		// READ
 		userSocialMedia.GET("/view", controllers.ViewSocialMedia)
-		// DELETE
 		userSocialMedia.DELETE("/delete/:socialMediaId", controllers.DeletedSocialMedia)
 
+		//Comment
 		userComment := userRouter.Group("/comment")
 		userComment.Use(middlewares.UserAuthorization())
-		// POST
 		userComment.POST("/create", controllers.CreateComment)
-		// UPDATE
 		userComment.PUT("/update/:commentId", controllers.UpdatedComment)
-		// READ
 		userComment.GET("/view", controllers.ViewComment)
-		// DELETE
 		userComment.DELETE("/delete/:commentId", controllers.DeletedComment)
 	}
 

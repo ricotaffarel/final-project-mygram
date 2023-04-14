@@ -27,6 +27,7 @@ func CreateComment(c *gin.Context) {
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	var User models.User
+	var Photo models.Photo
 	contentType := helpers.GetContentType(c)
 
 	Comment := models.Comment{}
@@ -51,6 +52,8 @@ func CreateComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+	db.Where("user_id= ?", Comment.PhotoID).Take(&Photo)
+	Comment.Photo = &Photo
 
 	response := helpers.APIResponse("Created Comment success", http.StatusCreated, "Success", Comment)
 	c.JSON(http.StatusCreated, response)
@@ -72,12 +75,20 @@ func UpdatedComment(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	Comment := models.Comment{}
+	User := models.User{}
 
 	commentId, _ := strconv.Atoi(c.Param("commentId"))
 	userID := uint(userData["id"].(float64))
 	// Product.UserID = userID
 	Comment.ID = uint(commentId)
 	comment := db.Preload("Photo").First(&Comment)
+	err := db.Where("id = ?", userID).Take(&User).Error
+
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if contentType == appJSON {
 		c.ShouldBindJSON(&Comment)
@@ -85,13 +96,15 @@ func UpdatedComment(c *gin.Context) {
 		c.ShouldBind(&Comment)
 	}
 
-	if userID != Comment.UserID {
-		response := helpers.APIResponse("Invalid comment id id", http.StatusBadRequest, "Error Bad Request", nil)
+	if userID == Comment.UserID {
+		err = comment.Save(&Comment).Error
+	} else if User.Role == "admin" {
+		err = comment.Save(&Comment).Error
+	} else {
+		response := helpers.APIResponse("Invalid comment id", http.StatusBadRequest, "Error Bad Request", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
-	err := comment.Save(&Comment).Error
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)
@@ -133,8 +146,10 @@ func ViewComment(c *gin.Context) {
 	fmt.Println(User.ID)
 	if commentId != 0 {
 		err = db.Where("id = ?", commentId).Find(&Comment).Preload("Photo").Error
-	} else {
+	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&Comment).Preload("Photo").Error
+	} else {
+		err = db.Find(&Comment).Preload("User").Error
 	}
 
 	if err != nil {
@@ -165,11 +180,31 @@ func ViewComment(c *gin.Context) {
 // @Router /users/comment/delete/{commentId} [delete]
 func DeletedComment(c *gin.Context) {
 	db := database.GetDB()
-	Photo := models.Photo{}
+	Comment := models.Comment{}
+	User := models.User{}
+	userData := c.MustGet("userData").(jwt.MapClaims)
+	userID := uint(userData["id"].(float64))
+	commentId, _ := strconv.Atoi(c.Param("commentId"))
+	Comment.ID = uint(commentId)
+	err := db.Where("id = ?", userID).Take(&User).Error
 
-	photoId, _ := strconv.Atoi(c.Param("commentId"))
-	Photo.ID = uint(photoId)
-	err := db.First(&Photo).Delete(&Photo).Error
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	
+	data := db.First(&Comment)
+
+	if userID == Comment.UserID {
+		err = data.Delete(&Comment).Error
+	} else if User.Role == "admin" {
+		err = data.Delete(&Comment).Error
+	} else {
+		response := helpers.APIResponse("Your don't have access to delete this comment", http.StatusBadRequest, "Error Bad Request", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)

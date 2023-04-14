@@ -45,8 +45,14 @@ func CreatePhoto(c *gin.Context) {
 		c.ShouldBind(&Photo)
 	}
 
-	err = db.Create(&Photo).Error
-	Photo.User = &User
+	if User.Role == "user" {
+		Photo.UserID = userID
+		err = db.Create(&Photo).Error
+		Photo.User = &User
+	} else {
+		err = db.Create(&Photo).Error
+	}
+
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Unauthorized", nil)
 		c.JSON(http.StatusBadRequest, response)
@@ -57,7 +63,7 @@ func CreatePhoto(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-//Update Photo godoc
+// Update Photo godoc
 // @Summary Update Photo
 // @Description Update an existing Photo
 // @Tags SocialMedia
@@ -73,12 +79,20 @@ func UpdatedPhoto(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	Photo := models.Photo{}
+	User := models.User{}
 
 	photoId, _ := strconv.Atoi(c.Param("photoId"))
 	userID := uint(userData["id"].(float64))
 	// Product.UserID = userID
 	Photo.ID = uint(photoId)
 	photo := db.Preload("User").First(&Photo)
+	err := db.Where("id = ?", userID).Take(&User).Error
+
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if contentType == appJSON {
 		c.ShouldBindJSON(&Photo)
@@ -86,13 +100,15 @@ func UpdatedPhoto(c *gin.Context) {
 		c.ShouldBind(&Photo)
 	}
 
-	if userID != Photo.UserID {
+	if userID == Photo.UserID {
+		err = photo.Save(&Photo).Error
+	} else if User.Role == "admin" {
+		err = photo.Save(&Photo).Error
+	} else {
 		response := helpers.APIResponse("Invalid photo id", http.StatusBadRequest, "Error Bad Request", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-
-	err := photo.Save(&Photo).Error
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)
@@ -104,7 +120,7 @@ func UpdatedPhoto(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-//View Photo godoc
+// View Photo godoc
 // @Summary View photo
 // @Description View photo data
 // @Tags photo
@@ -134,8 +150,10 @@ func ViewPhoto(c *gin.Context) {
 	fmt.Println(User.ID)
 	if photoId != 0 {
 		err = db.Where("id = ?", photoId).Find(&Photo).Preload("User").Error
-	} else {
+	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&Photo).Preload("User").Error
+	} else {
+		err = db.Find(&Photo).Preload("User").Error
 	}
 
 	if err != nil {
@@ -154,7 +172,7 @@ func ViewPhoto(c *gin.Context) {
 
 }
 
-//Delete Photo godoc
+// Delete Photo godoc
 // @Summary Delete photo
 // @Description Delete photo data
 // @Tags photo
@@ -167,20 +185,31 @@ func ViewPhoto(c *gin.Context) {
 func DeletedPhoto(c *gin.Context) {
 	db := database.GetDB()
 	Photo := models.Photo{}
+	User := models.User{}
 
 	photoId, _ := strconv.Atoi(c.Param("photoId"))
 	Photo.ID = uint(photoId)
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	userID := uint(userData["id"].(float64))
+	err := db.Where("id = ?", userID).Take(&User).Error
 
-	data := db.First(&Photo)
-
-	if userID != Photo.UserID {
-		response := helpers.APIResponse("Invalid social media id", http.StatusBadRequest, "Error Bad Request", nil)
+	if err != nil {
+		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	err := data.Delete(&Photo).Error
+
+	data := db.First(&Photo)
+
+	if userID == Photo.UserID {
+		err = data.Delete(&Photo).Error
+	} else if User.Role == "admin" {
+		err = data.Delete(&Photo).Error
+	} else {
+		response := helpers.APIResponse("Your don't have access to delete this photo", http.StatusBadRequest, "Error Bad Request", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Error Bad Request", nil)
