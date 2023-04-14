@@ -26,7 +26,7 @@ func UserRegister(c *gin.Context) {
 	db := database.GetDB()
 	contentType := helpers.GetContentType(c)
 	_, _ = db, contentType
-	User := models.FormatterUser{}
+	User := models.User{}
 
 	if contentType == appJSON {
 		c.ShouldBindJSON(&User)
@@ -40,15 +40,15 @@ func UserRegister(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	// user := map[string]interface{}{
-	// 	"id":       User.ID,
-	// 	"username": User.Username,
-	// 	"email":    User.Email,
-	// 	"role":     User.Role,
-	// 	"age":      User.Age,
-	// }
+	user := map[string]interface{}{
+		"id":       User.ID,
+		"username": User.Username,
+		"email":    User.Email,
+		"role":     User.Role,
+		"age":      User.Age,
+	}
 
-	response := helpers.APIResponse("User Registered", http.StatusCreated, "Success", User)
+	response := helpers.APIResponse("User Registered", http.StatusCreated, "Success", user)
 	c.JSON(http.StatusCreated, response)
 }
 

@@ -25,7 +25,7 @@ import (
 func CreateSocialMedia(c *gin.Context) {
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
-	var User models.User
+	var User models.FormatterUser
 	contentType := helpers.GetContentType(c)
 
 	SocialMedia := models.SocialMedia{}
@@ -79,7 +79,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
 	SocialMedia := models.SocialMedia{}
-	User := models.User{}
+	User := models.FormatterUser{}
 
 	socialMediaId, _ := strconv.Atoi(c.Param("socialMediaId"))
 	userID := uint(userData["id"].(float64))
@@ -133,7 +133,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 // @Router /users/socialmedia/view [get]
 func ViewSocialMedia(c *gin.Context) {
 	db := database.GetDB()
-	User := models.User{}
+	User := models.FormatterUser{}
 	SocialMedia := []models.SocialMedia{}
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	socialMediaId, _ := strconv.Atoi(c.Query("socialMediaId"))
@@ -185,7 +185,7 @@ func ViewSocialMedia(c *gin.Context) {
 func DeletedSocialMedia(c *gin.Context) {
 	db := database.GetDB()
 	SocialMedia := models.SocialMedia{}
-	User := models.User{}
+	User := models.FormatterUser{}
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	socialMediaId, _ := strconv.Atoi(c.Param("socialMediaId"))
 	SocialMedia.ID = uint(socialMediaId)
