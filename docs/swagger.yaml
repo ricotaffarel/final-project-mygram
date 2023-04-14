@@ -1,0 +1,465 @@
+basePath: /
+definitions:
+  models.Comment:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      messege:
+        type: string
+      photo:
+        allOf:
+        - $ref: '#/definitions/models.Photo'
+        description: User    *User
+      photo_id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.Photo:
+    properties:
+      caption:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.SocialMedia:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      social_media_url:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      age:
+        type: integer
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: rico@gmail.com
+    name: API Support
+  description: This is a sample service for managing books
+  termsOfService: http://swagger.io/terms/
+  title: Final project Api
+  version: "1.1"
+paths:
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Register User
+      parameters:
+      - description: Login User
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Post details for a given Id
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register User
+      parameters:
+      - description: Register User
+        in: body
+        name: models.User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Post details for a given Id
+      tags:
+      - User
+  /users/comment/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Comment account for logged in user
+      parameters:
+      - description: JWT authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Comment data to create
+        in: body
+        name: models.Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Comment'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Comment account
+      tags:
+      - Comment
+  /users/comment/delete/{commentId}:
+    delete:
+      consumes:
+      - application/json
+      description: Update Social Media User
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Comment'
+      summary: Delete details for a given Id
+      tags:
+      - Comment
+  /users/comment/update/{commentId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing Comment
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      - description: Comment information
+        in: body
+        name: models.Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Update Comment
+      tags:
+      - SocialMedia
+  /users/comment/view:
+    get:
+      consumes:
+      - application/json
+      description: View Comment data
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      - description: Comment data
+        in: body
+        name: models.Comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      security:
+      - ApiKeyAuth: []
+      summary: View Comment
+      tags:
+      - Comment
+  /users/photo/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Photo account for logged in user
+      parameters:
+      - description: JWT authorization token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo data to create
+        in: body
+        name: models.Photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.Photo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Photo'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Photo account
+      tags:
+      - Photo
+  /users/photo/update/{photoId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing Photo
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photo ID
+        in: path
+        name: photoId
+        required: true
+        type: integer
+      - description: Photo information
+        in: body
+        name: models.Photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.Photo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Update Photo
+      tags:
+      - SocialMedia
+  /users/photo/view:
+    get:
+      consumes:
+      - application/json
+      description: View photo data
+      parameters:
+      - description: photo ID
+        in: path
+        name: photoId
+        required: true
+        type: integer
+      - description: photo data
+        in: body
+        name: models.Photo
+        required: true
+        schema:
+          $ref: '#/definitions/models.Photo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      security:
+      - ApiKeyAuth: []
+      summary: View photo
+      tags:
+      - photo
+  /users/socialmedia/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Social Media User
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Create SocialMedia
+        in: body
+        name: models.SocialMedia
+        required: true
+        schema:
+          $ref: '#/definitions/models.SocialMedia'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Post details for a given Id
+      tags:
+      - SocialMedia
+  /users/socialmedia/delete/{photoId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete photo data
+      parameters:
+      - description: photo ID
+        in: path
+        name: photoId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Photo'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete photo
+      tags:
+      - photo
+  /users/socialmedia/delete/{socialmediaId}:
+    delete:
+      consumes:
+      - application/json
+      description: Update Social Media User
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: social media id
+        in: path
+        name: socialmediaId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Delete details for a given Id
+      tags:
+      - SocialMedia
+  /users/socialmedia/update/{socialMediaId}:
+    patch:
+      consumes:
+      - application/json
+      description: Update Social Media User
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: social media id
+        in: path
+        name: socialmediaId
+        required: true
+        type: integer
+      - description: Update SocialMedia
+        in: body
+        name: models.SocialMedia
+        required: true
+        schema:
+          $ref: '#/definitions/models.SocialMedia'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Post details for a given Id
+      tags:
+      - SocialMedia
+  /users/socialmedia/view:
+    get:
+      consumes:
+      - application/json
+      description: View Social Media User
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: View SocialMedia
+        in: body
+        name: models.SocialMedia
+        required: true
+        schema:
+          $ref: '#/definitions/models.SocialMedia'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SocialMedia'
+      summary: Post details for a given Id
+      tags:
+      - SocialMedia
+swagger: "2.0"
