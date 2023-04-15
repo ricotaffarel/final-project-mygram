@@ -144,8 +144,13 @@ func ViewComment(c *gin.Context) {
 
 	fmt.Println(commentId)
 	fmt.Println(User.ID)
-	if commentId != 0 && User.Role == "user" {
+	if commentId != 0 {
 		err = db.Where("id = ?", commentId).Find(&Comment).Preload("Photo").Error
+		if commentId != int(Comment[0].UserID) {
+			response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
+			c.JSON(http.StatusBadRequest, response)
+			return
+		}
 	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&Comment).Preload("Photo").Error
 	} else {
@@ -193,7 +198,7 @@ func DeletedComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	data := db.First(&Comment)
 
 	if userID == Comment.UserID {
