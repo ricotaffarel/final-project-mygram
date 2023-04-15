@@ -150,7 +150,7 @@ func ViewPhoto(c *gin.Context) {
 	fmt.Println(User.ID)
 	if photoId != 0 && User.Role == "user" {
 		err = db.Where("id = ?", photoId).Find(&Photo).Preload("User").Error
-		if int(userID) != int(Photo[0].UserID) || Photo[0].UserID == 0{
+		if int(userID) != int(Photo[0].UserID) || len(Photo) == 0{
 			response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
 			c.JSON(http.StatusBadRequest, response)
 			return
