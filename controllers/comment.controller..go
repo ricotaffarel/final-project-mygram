@@ -102,7 +102,7 @@ func UpdatedComment(c *gin.Context) {
 	} else if User.Role == "admin" {
 		err = comment.Save(&Comment).Error
 	} else {
-		response := helpers.APIResponse("Invalid comment id", http.StatusBadRequest, "Error Bad Request", nil)
+		response := helpers.APIResponse("Invalid comment id", http.StatusBadRequest, "Unauthorize", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
