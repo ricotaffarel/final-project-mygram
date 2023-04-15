@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt"
 )
 
 // SocialMediaCreate godoc
@@ -24,13 +24,15 @@ import (
 // @Router /users/socialmedia/create [post]
 func CreateSocialMedia(c *gin.Context) {
 	db := database.GetDB()
-	userData := c.MustGet("userData").(jwt.MapClaims)
-	var User models.User
 	contentType := helpers.GetContentType(c)
 
 	SocialMedia := models.SocialMedia{}
+	userData := c.MustGet("userData").(jwt.MapClaims)
 	userID := uint(userData["id"].(float64))
-	err := db.Where("id = ?", userID).Take(&User).Error
+	User := models.User{}
+	User.ID = userID
+
+	err := db.First(&User).Error
 
 	if err != nil {
 		response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
@@ -58,6 +60,7 @@ func CreateSocialMedia(c *gin.Context) {
 
 	response := helpers.APIResponse("Created Social Media success", http.StatusCreated, "Success", SocialMedia)
 	c.JSON(http.StatusCreated, response)
+	// c.JSON(http.StatusAccepted, "ok")
 }
 
 // update social media
