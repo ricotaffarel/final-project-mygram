@@ -10,7 +10,7 @@
         },
         "version": "1.1"
     },
-    "host": "localhost:8080",
+    "host": "final-project-mygram-production.up.railway.app",
     "basePath": "/",
     "paths": {
         "/user/login": {
@@ -29,7 +29,7 @@
                 "parameters": [
                     {
                         "description": "Login User",
-                        "name": "models.User",
+                        "name": "User",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -63,7 +63,7 @@
                 "parameters": [
                     {
                         "description": "Register User",
-                        "name": "models.User",
+                        "name": "User",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -703,6 +703,9 @@
                     "type": "integer"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 },
                 "updated_at": {

@@ -21,7 +21,7 @@ import (
 // @Produce json
 // @Param Authorization header string true "JWT authorization token"
 // @Param models.Comment body models.Comment true "Comment data to create"
-// @Success 201 {object} helpers.APIResponse
+// @Success 201 {object} models.Comment
 // @Router /users/comment/create [post]
 func CreateComment(c *gin.Context) {
 	db := database.GetDB()
@@ -68,7 +68,7 @@ func CreateComment(c *gin.Context) {
 // @Param Authorization header string true "Bearer {token}"
 // @Param commentId path uint true "Comment ID"
 // @Param models.Comment body models.Comment true "Comment information"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.SocialMedia
 // @Router /users/comment/update/{commentId} [patch]
 func UpdatedComment(c *gin.Context) {
 	db := database.GetDB()
@@ -125,7 +125,7 @@ func UpdatedComment(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param commentId path int true "Comment ID"
 // @Param models.Comment body models.Comment true "Comment data"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.SocialMedia
 // @Router /users/comment/view [get]
 func ViewComment(c *gin.Context) {
 	db := database.GetDB()
@@ -176,7 +176,7 @@ func ViewComment(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "Bearer {token}"
 // @Query commentId true "comment id"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.Comment
 // @Router /users/comment/delete/{commentId} [delete]
 func DeletedComment(c *gin.Context) {
 	db := database.GetDB()

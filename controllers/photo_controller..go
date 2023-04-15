@@ -21,7 +21,7 @@ import (
 // @Produce json
 // @Param Authorization header string true "JWT authorization token"
 // @Param models.Photo body models.Photo true "Photo data to create"
-// @Success 201 {object} helpers.APIResponse
+// @Success 201 {object} models.Photo
 // @Router /users/photo/create [post]
 func CreatePhoto(c *gin.Context) {
 	db := database.GetDB()
@@ -72,7 +72,7 @@ func CreatePhoto(c *gin.Context) {
 // @Param Authorization header string true "Bearer {token}"
 // @Param photoId path uint true "Photo ID"
 // @Param models.Photo body models.Photo true "Photo information"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.SocialMedia
 // @Router /users/photo/update/{photoId} [patch]
 func UpdatedPhoto(c *gin.Context) {
 	db := database.GetDB()
@@ -129,7 +129,7 @@ func UpdatedPhoto(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Param photoId path int true "photo ID"
 // @Param models.Photo body models.Photo true "photo data"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.SocialMedia
 // @Router /users/photo/view [get]
 func ViewPhoto(c *gin.Context) {
 	db := database.GetDB()
@@ -180,7 +180,7 @@ func ViewPhoto(c *gin.Context) {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param photoId path int true "photo ID"
-// @Success 200 {object} helpers.APIResponse
+// @Success 200 {object} models.Photo
 // @Router /users/socialmedia/delete/{photoId} [delete]
 func DeletedPhoto(c *gin.Context) {
 	db := database.GetDB()

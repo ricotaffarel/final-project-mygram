@@ -36,7 +36,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Login User",
-                        "name": "models.User",
+                        "name": "User",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -70,7 +70,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Register User",
-                        "name": "models.User",
+                        "name": "User",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -712,6 +712,9 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "role": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -726,7 +729,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.1",
-	Host:             "localhost:8080",
+	Host:             "final-project-mygram-production.up.railway.app",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Final project Api",
