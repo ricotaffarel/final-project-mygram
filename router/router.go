@@ -21,7 +21,7 @@ import (
 // @contact.email rico@gmail.com
 // @lisence.name Apache 2.0
 // @lisence.url https://www.apache.org/licenses/LICENSE-2.0.html
-// @host https://final-project-mygram-production.up.railway.app/
+// @host final-project-mygram-production.up.railway.app
 // @BasePath /
 func StartApp() *gin.Engine {
 	r := gin.Default()
