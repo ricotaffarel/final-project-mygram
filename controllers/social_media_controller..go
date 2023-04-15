@@ -47,11 +47,9 @@ func CreateSocialMedia(c *gin.Context) {
 	if User.Role == "user" {
 		User.Password = ""
 		SocialMedia.UserID = userID
-		err = db.Create(&SocialMedia).Error
 		SocialMedia.User = &User
-	} else {
-		err = db.Create(&SocialMedia).Error
 	}
+	err = db.Create(&SocialMedia).Error
 
 	if err != nil {
 		response := helpers.APIResponse(err.Error(), http.StatusBadRequest, "Unauthorized", nil)
