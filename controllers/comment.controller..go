@@ -146,7 +146,7 @@ func ViewComment(c *gin.Context) {
 	fmt.Println(User.ID)
 	if commentId != 0 {
 		err = db.Where("id = ?", commentId).Find(&Comment).Preload("Photo").Error
-		if commentId != int(Comment[0].UserID) {
+		if commentId != int(Comment[0].UserID) || Comment[0].UserID == 0 {
 			response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
 			c.JSON(http.StatusBadRequest, response)
 			return
