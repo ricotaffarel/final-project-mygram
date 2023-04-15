@@ -45,6 +45,7 @@ func CreateComment(c *gin.Context) {
 	} else {
 		c.ShouldBind(&Comment)
 	}
+	Comment.UserID = userID
 
 	err = db.Create(&Comment).Error
 	if err != nil {
