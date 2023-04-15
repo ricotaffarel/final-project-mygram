@@ -149,7 +149,7 @@ func ViewSocialMedia(c *gin.Context) {
 
 	fmt.Println(socialMediaId)
 	fmt.Println(User.ID)
-	if socialMediaId != 0 {
+	if socialMediaId != 0 && User.Role == "user" {
 		err = db.Where("id = ?", socialMediaId).Find(&SocialMedia).Preload("User").Error
 	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&SocialMedia).Preload("User").Error

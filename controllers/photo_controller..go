@@ -148,7 +148,7 @@ func ViewPhoto(c *gin.Context) {
 
 	fmt.Println(photoId)
 	fmt.Println(User.ID)
-	if photoId != 0 {
+	if photoId != 0 && User.Role == "user" {
 		err = db.Where("id = ?", photoId).Find(&Photo).Preload("User").Error
 	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&Photo).Preload("User").Error
