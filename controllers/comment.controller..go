@@ -144,7 +144,7 @@ func ViewComment(c *gin.Context) {
 
 	fmt.Println(commentId)
 	fmt.Println(User.ID)
-	if commentId != 0 {
+	if commentId != 0 && User.Role == "user" {
 		err = db.Where("id = ?", commentId).Find(&Comment).Preload("Photo").Error
 	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&Comment).Preload("Photo").Error
