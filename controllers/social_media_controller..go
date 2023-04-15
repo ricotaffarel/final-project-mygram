@@ -151,7 +151,7 @@ func ViewSocialMedia(c *gin.Context) {
 	fmt.Println(User.ID)
 	if socialMediaId != 0 {
 		err = db.Where("id = ?", socialMediaId).Find(&SocialMedia).Preload("User").Error
-		if int(userID) != int(SocialMedia[0].UserID) || len(SocialMedia)== 0 {
+		if int(userID) != int(SocialMedia[0].UserID){
 			response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Unauthorized", nil)
 			c.JSON(http.StatusBadRequest, response)
 			return
