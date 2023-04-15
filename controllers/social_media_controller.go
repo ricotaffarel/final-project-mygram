@@ -156,6 +156,11 @@ func ViewSocialMedia(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, response)
 			return
 		}
+		if len(SocialMedia) == 0 {
+			response := helpers.APIResponse("Invalid user id", http.StatusBadRequest, "Bad Request", nil)
+			c.JSON(http.StatusBadRequest, response)
+			return
+		}
 	} else if User.Role == "user" {
 		err = db.Where("user_id = ?", userID).Find(&SocialMedia).Preload("User").Error
 	} else {
@@ -227,7 +232,7 @@ func DeletedSocialMedia(c *gin.Context) {
 		return
 	}
 
-	response := helpers.APIResponse("Product has be deleted", http.StatusBadRequest, "Success", nil)
+	response := helpers.APIResponse("Social media has be deleted", http.StatusBadRequest, "Success", nil)
 	c.JSON(http.StatusBadRequest, response)
 
 }
