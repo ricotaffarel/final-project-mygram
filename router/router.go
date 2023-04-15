@@ -41,16 +41,14 @@ func StartApp() *gin.Engine {
 	{
 		userRouter.Use(middlewares.Authentication())
 		//Photo
-		userPhoto := userRouter.Group("/photo")
-		userPhoto.Use(middlewares.UserAuthorization())
+		userPhoto := userRouter.Group("/photo", middlewares.UserAuthorization())
 		userPhoto.POST("/create", controllers.CreatePhoto)
 		userPhoto.PUT("/update/:photoId", controllers.UpdatedPhoto)
 		userPhoto.GET("/view", controllers.ViewPhoto)
 		userPhoto.DELETE("/delete/:photoId", controllers.DeletedPhoto)
 
 		//Social Media
-		userSocialMedia := userRouter.Group("/socialmedia")
-		userSocialMedia.Use(middlewares.UserAuthorization())
+		userSocialMedia := userRouter.Group("/socialmedia", middlewares.UserAuthorization())
 		userSocialMedia.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, "ok")
 		})
@@ -60,8 +58,7 @@ func StartApp() *gin.Engine {
 		userSocialMedia.DELETE("/delete/:socialMediaId", controllers.DeletedSocialMedia)
 
 		//Comment
-		userComment := userRouter.Group("/comment")
-		userComment.Use(middlewares.UserAuthorization())
+		userComment := userRouter.Group("/comment", middlewares.Authentication())
 		userComment.POST("/create", controllers.CreateComment)
 		userComment.PUT("/update/:commentId", controllers.UpdatedComment)
 		userComment.GET("/view", controllers.ViewComment)
