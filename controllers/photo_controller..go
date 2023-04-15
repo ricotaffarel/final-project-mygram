@@ -105,7 +105,7 @@ func UpdatedPhoto(c *gin.Context) {
 	} else if User.Role == "admin" {
 		err = photo.Save(&Photo).Error
 	} else {
-		response := helpers.APIResponse("Invalid photo id", http.StatusBadRequest, "Error Bad Request", nil)
+		response := helpers.APIResponse("Invalid photo id", http.StatusBadRequest, "Unauthorize", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}

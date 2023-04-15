@@ -94,6 +94,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+	User.Password = ""
 
 	if contentType == appJSON {
 		c.ShouldBindJSON(&SocialMedia)
@@ -106,7 +107,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 	} else if User.Role == "admin" {
 		err = socialMedia.Save(&SocialMedia).Error
 	} else {
-		response := helpers.APIResponse("Invalid social media id", http.StatusBadRequest, "Error Bad Request", nil)
+		response := helpers.APIResponse("Invalid social media id", http.StatusBadRequest, "Unauthorize", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -146,6 +147,7 @@ func ViewSocialMedia(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+	User.Password = ""
 
 	fmt.Println(socialMediaId)
 	fmt.Println(User.ID)
