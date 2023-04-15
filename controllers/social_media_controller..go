@@ -200,7 +200,7 @@ func DeletedSocialMedia(c *gin.Context) {
 	}
 
 	data := db.First(&SocialMedia)
-	if SocialMedia.ID == 0 {
+	if SocialMedia.Name == "" {
 		response := helpers.APIResponse("id not found", http.StatusNotFound, "Unauthorized", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
