@@ -20,7 +20,7 @@ import (
 // @Produce json
 // @Param Authorization header string true "Bearer {token}"
 // @Param models.SocialMedia body models.SocialMedia true "Create SocialMedia"
-// @Success 200 {object} models.SocialMedia
+// @Success 200 {object} helpers.APIResponse
 // @Router /users/socialmedia/create [post]
 func CreateSocialMedia(c *gin.Context) {
 	db := database.GetDB()
@@ -73,7 +73,7 @@ func CreateSocialMedia(c *gin.Context) {
 // @Param Authorization header string true "Bearer {token}"
 // @Param socialmediaId path int true "social media id"
 // @Param models.SocialMedia body models.SocialMedia true "Update SocialMedia"
-// @Success 200 {object} models.SocialMedia
+// @Success 200 {object} helpers.APIResponse
 // @Router /users/socialmedia/update/{socialMediaId} [patch]
 func UpdatedSocialMedia(c *gin.Context) {
 	db := database.GetDB()
@@ -130,7 +130,7 @@ func UpdatedSocialMedia(c *gin.Context) {
 // @Param Authorization header string true "Bearer {token}"
 // @Query socialmediaId true "social media id"
 // @Param models.SocialMedia body models.SocialMedia true "View SocialMedia"
-// @Success 200 {object} models.SocialMedia
+// @Success 200 {object} helpers.APIResponse
 // @Router /users/socialmedia/view [get]
 func ViewSocialMedia(c *gin.Context) {
 	db := database.GetDB()
@@ -181,7 +181,7 @@ func ViewSocialMedia(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "Bearer {token}"
 // @Param socialmediaId path int true "social media id"
-// @Success 200 {object} models.SocialMedia
+// @Success 200 {object} helpers.APIResponse
 // @Router /users/socialmedia/delete/{socialmediaId} [delete]
 func DeletedSocialMedia(c *gin.Context) {
 	db := database.GetDB()
