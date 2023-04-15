@@ -49,6 +49,7 @@ func CreateSocialMedia(c *gin.Context) {
 		SocialMedia.UserID = userID
 		SocialMedia.User = &User
 	}
+	
 	err = db.Create(&SocialMedia).Error
 
 	if err != nil {
