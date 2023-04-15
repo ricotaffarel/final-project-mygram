@@ -51,6 +51,9 @@ func StartApp() *gin.Engine {
 		//Social Media
 		userSocialMedia := userRouter.Group("/socialmedia")
 		userSocialMedia.Use(middlewares.UserAuthorization())
+		userSocialMedia.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, "ok")
+		})
 		userSocialMedia.POST("/create", controllers.CreateSocialMedia)
 		userSocialMedia.PUT("/update/:socialMediaId", controllers.UpdatedSocialMedia)
 		userSocialMedia.GET("/view", controllers.ViewSocialMedia)
