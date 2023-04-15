@@ -38,18 +38,16 @@ func CreateSocialMedia(c *gin.Context) {
 		return
 	}
 
+	if User.Role == "user" {
+		SocialMedia.UserID = userID
+	}
+
 	if contentType == appJSON {
 		c.ShouldBindJSON(&SocialMedia)
 	} else {
 		c.ShouldBind(&SocialMedia)
 	}
 
-	if User.Role == "user" {
-		User.Password = ""
-		SocialMedia.UserID = userID
-		SocialMedia.User = &User
-	}
-	
 	err = db.Create(&SocialMedia).Error
 
 	if err != nil {
